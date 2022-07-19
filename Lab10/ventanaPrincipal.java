@@ -7,12 +7,18 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class ventanaPrincipal extends JFrame {
 
@@ -38,6 +44,7 @@ public class ventanaPrincipal extends JFrame {
 	 * Create the frame.
 	 */
 	public ventanaPrincipal() {
+		//getConexion();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 539, 417);
 		contentPane = new JPanel();
@@ -57,7 +64,7 @@ public class ventanaPrincipal extends JFrame {
 		JLabel lblHolaSeleccionaLa = new JLabel("Hola, selecciona la accion que deseas realizar: ");
 		lblHolaSeleccionaLa.setHorizontalAlignment(SwingConstants.LEFT);
 		lblHolaSeleccionaLa.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
-		lblHolaSeleccionaLa.setBounds(10, 83, 511, 49);
+		lblHolaSeleccionaLa.setBounds(10, 83, 391, 49);
 		contentPane.add(lblHolaSeleccionaLa);
 		
 		JButton btnGestion = new JButton("Gestionar proyectos");
@@ -68,7 +75,7 @@ public class ventanaPrincipal extends JFrame {
 				n.setVisible(true);
 			}
 		});
-		btnGestion.setBounds(10, 132, 149, 235);
+		btnGestion.setBounds(20, 125, 481, 67);
 		contentPane.add(btnGestion);
 		
 		JButton btnConsulta1 = new JButton("Consulta de proyectos por departamento");
@@ -79,7 +86,7 @@ public class ventanaPrincipal extends JFrame {
 				n.setVisible(true);
 			}
 		});
-		btnConsulta1.setBounds(181, 132, 149, 235);
+		btnConsulta1.setBounds(20, 210, 481, 67);
 		contentPane.add(btnConsulta1);
 		
 		JButton btnConsulta2 = new JButton("Consulta de Ingenieros por proyecto");
@@ -90,7 +97,7 @@ public class ventanaPrincipal extends JFrame {
 				n.setVisible(true);
 			}
 		});
-		btnConsulta2.setBounds(364, 132, 149, 235);
+		btnConsulta2.setBounds(20, 300, 481, 67);
 		contentPane.add(btnConsulta2);
 	}
 }

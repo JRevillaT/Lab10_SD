@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.SwingConstants;
@@ -14,12 +16,18 @@ import javax.swing.JTextArea;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 public class Consulta2 extends JFrame {
 
 	private JPanel contentPane;
 
+	public static final String URL = "jdbc:mysql://localhost:3306/test";
+    public static final String USER = "root";
+    public static final String CLAVE = "root";
 	/**
 	 * Launch the application.
 	 */
@@ -40,6 +48,21 @@ public class Consulta2 extends JFrame {
 	 * Create the frame.
 	 */
 	public Consulta2() {
+		Connection con = null;
+        
+        try {
+				Class.forName("com.mysql.cj.jdbc.Driver");
+				con = (Connection) DriverManager.getConnection(URL, USER, CLAVE);
+			} catch (ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        JOptionPane.showMessageDialog(null, "Se conecto a la bd");
+        
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 538, 481);
 		contentPane = new JPanel();
@@ -92,7 +115,7 @@ public class Consulta2 extends JFrame {
 			}
 		});
 		btnNewButton.setBackground(new Color(255, 204, 0));
-		btnNewButton.setBounds(10, 417, 145, 23);
+		btnNewButton.setBounds(10, 417, 169, 23);
 		contentPane.add(btnNewButton);
 	}
 
