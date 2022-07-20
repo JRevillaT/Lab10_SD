@@ -22,6 +22,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class PestañaGestion extends JFrame {
 
@@ -37,6 +39,10 @@ public class PestañaGestion extends JFrame {
 	private JTextField txtFeTerP;
 	private JTextField txtEspI;
 	private JTextField txtCargoI;
+	private JComboBox cmbDpto;
+	private JComboBox cmbIng;
+	private String [] opDpto= {"Ninguno", "1. Direccion general", "2. Financiero", "3. Marketing", "4. R.R. H.H.", "5. Comercial", "6. TI"};
+	private String [] opIng= {"Ninguno", "1. Ingenieria Hidraulica", "2. Negocios Electronicos", "3. Seguridad Informatica", "4. Desarrollo Web", "5. Metodologias Agiles", "6. Gestion de Proyectos", "7. Gerencia de Operaciones"};
 
 	public static final String URL = "jdbc:mysql://localhost:3306/test";
     public static final String USER = "root";
@@ -101,6 +107,43 @@ public class PestañaGestion extends JFrame {
         panel2.add(txtIdP);
         
         JButton btnNewButton_2_1 = new JButton("Buscar");
+        btnNewButton_2_1.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		Connection con = null;
+                try {
+       				Class.forName("com.mysql.cj.jdbc.Driver");
+       				con = (Connection) DriverManager.getConnection(URL, USER, CLAVE);
+       			} catch (ClassNotFoundException e1) {
+       				// TODO Auto-generated catch block
+       				e1.printStackTrace();
+       			}
+                catch (SQLException e1) {
+       				// TODO Auto-generated catch block
+       				e1.printStackTrace();
+       			}
+        		 PreparedStatement ps=null;
+                 ResultSet res;
+                 try {
+ 					ps=con.prepareStatement("SELECT * FROM proyectos WHERE idproy=?");
+ 					ps.setString(1, txtIdP.getText());
+ 		            res=ps.executeQuery();
+ 		            if(res.next()){
+ 		            	txtIdP.setEditable(false);
+ 		            	txtNombreP.setText(res.getString("nombre"));
+ 		            	txtFeIniP.setText(res.getString("f_inicio"));
+ 		            	txtFeTerP.setText(res.getString("f_termino"));
+ 		            	cmbDpto.setSelectedItem(opDpto[(res.getInt("id_dpt"))]);
+ 		            	cmbIng.setSelectedItem(opIng[res.getInt("id_ing")]);
+ 		            }else{
+ 		                JOptionPane.showMessageDialog(null, "No se encontro el registro del proyecto");
+ 		            }
+ 				} catch (SQLException e1) {
+ 					// TODO Auto-generated catch block
+ 					e1.printStackTrace();
+ 				}
+        		
+        	}
+        });
         btnNewButton_2_1.setBounds(169, 33, 89, 23);
         panel2.add(btnNewButton_2_1);
         
@@ -117,17 +160,17 @@ public class PestañaGestion extends JFrame {
         panel2.add(lblNewLabel_6);
         
         txtNombreP = new JTextField();
-        txtNombreP.setBounds(124, 84, 286, 20);
+        txtNombreP.setBounds(145, 84, 286, 20);
         panel2.add(txtNombreP);
         txtNombreP.setColumns(10);
         
         txtFeIniP = new JTextField();
-        txtFeIniP.setBounds(124, 131, 286, 20);
+        txtFeIniP.setBounds(145, 131, 286, 20);
         panel2.add(txtFeIniP);
         txtFeIniP.setColumns(10);
         
         txtFeTerP = new JTextField();
-        txtFeTerP.setBounds(124, 169, 286, 20);
+        txtFeTerP.setBounds(145, 169, 286, 20);
         panel2.add(txtFeTerP);
         txtFeTerP.setColumns(10);
         
@@ -138,6 +181,149 @@ public class PestañaGestion extends JFrame {
         JLabel lblNewLabel_9_1 = new JLabel("Ingeniero a cargo");
         lblNewLabel_9_1.setBounds(22, 235, 100, 14);
         panel2.add(lblNewLabel_9_1);
+        
+        cmbDpto = new JComboBox();
+        cmbDpto.setModel(new DefaultComboBoxModel(new String[] {"Ninguno", "1. Direccion general", "2. Financiero", "3. Marketing", "4. R.R. H.H.", "5. Comercial", "6. TI"}));
+        cmbDpto.setBounds(145, 200, 176, 22);
+        panel2.add(cmbDpto);
+        
+        cmbIng = new JComboBox();
+        cmbIng.setModel(new DefaultComboBoxModel(new String[] {"Ninguno", "1. Ingenieria Hidraulica", "2. Negocios Electronicos", "3. Seguridad Informatica", "4. Desarrollo Web", "5. Metodologias Agiles", "6. Gestion de Proyectos", "7. Gerencia de Operaciones"}));
+        cmbIng.setBounds(145, 231, 176, 22);
+        panel2.add(cmbIng);
+        
+        JButton btnLimpiarDatosP = new JButton("Limpiar Datos");
+        btnLimpiarDatosP.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		limpiarDatosP();        	}
+        });
+        btnLimpiarDatosP.setBounds(22, 276, 136, 23);
+        panel2.add(btnLimpiarDatosP);
+        
+        JButton btnInsertarD_1 = new JButton("Insertar");
+        btnInsertarD_1.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		Connection con = null;
+                try {
+       				Class.forName("com.mysql.cj.jdbc.Driver");
+       				con = (Connection) DriverManager.getConnection(URL, USER, CLAVE);
+       			} catch (ClassNotFoundException e1) {
+       				// TODO Auto-generated catch block
+       				e1.printStackTrace();
+       			}
+                catch (SQLException e1) {
+       				// TODO Auto-generated catch block
+       				e1.printStackTrace();
+       			}
+        		 PreparedStatement ps=null;
+                 try {
+					ps=con.prepareStatement("INSERT INTO proyectos (idproy, nombre, f_inicio, f_termino, id_dpt, id_ing) VALUES(?,?,?,?,?,?)");
+					ps.setString(1, txtIdP.getText());
+		            ps.setString(2, txtNombreP.getText());
+		            ps.setString(3, txtFeIniP.getText());
+		            ps.setString(4, txtFeTerP.getText());
+		            String selDep=(String)cmbDpto.getSelectedItem();
+		            //System.out.println(selDep.charAt(0));
+		            ps.setInt(5,  Integer.parseInt(selDep.substring(0, 1)) );
+		            String selIng=(String)cmbIng.getSelectedItem();
+		            ps.setInt(6, Integer.parseInt(selIng.substring(0, 1)));
+		            //System.out.println(selIng.charAt(0));
+		            int rpta=ps.executeUpdate();
+		            if(rpta>0){
+		                JOptionPane.showMessageDialog(null,"Se añadio el registro de proyecto");
+		            }else{
+		                JOptionPane.showMessageDialog(null, "No se pudo añadir el proyecto, intente de nuevo");
+		            }
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+                 limpiarDatosP();
+        		
+        	}
+        });
+        btnInsertarD_1.setBackground(new Color(0, 204, 0));
+        btnInsertarD_1.setBounds(210, 276, 89, 23);
+        panel2.add(btnInsertarD_1);
+        
+        JButton btnActualizarD_1 = new JButton("Actualizar");
+        btnActualizarD_1.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		Connection con = null;
+                try {
+       				Class.forName("com.mysql.cj.jdbc.Driver");
+       				con = (Connection) DriverManager.getConnection(URL, USER, CLAVE);
+       			} catch (ClassNotFoundException e1) {
+       				// TODO Auto-generated catch block
+       				e1.printStackTrace();
+       			}
+                catch (SQLException e1) {
+       				// TODO Auto-generated catch block
+       				e1.printStackTrace();
+       			}
+        		 PreparedStatement ps=null;
+        		 try {
+ 					ps=con.prepareStatement("UPDATE proyectos SET nombre=?,f_inicio=?,f_termino=?,id_dpt=?,id_ing=? WHERE idproy=?");
+ 					ps.setString(1, txtNombreP.getText());
+ 					ps.setString(2, txtFeIniP.getText());
+ 		            ps.setString(3, txtFeTerP.getText());
+ 		            String selDpto=(String) (cmbDpto.getSelectedItem());
+ 		            ps.setInt(4, Integer.parseInt(selDpto.substring(0,1)));
+ 		            String selIng=(String) (cmbIng.getSelectedItem());
+ 		            ps.setInt(5, Integer.parseInt(selIng.substring(0,1)));
+ 		            ps.setString(6, txtIdP.getText());
+ 		            int rpta=ps.executeUpdate();
+ 		            if(rpta>0) {
+                       JOptionPane.showMessageDialog(null,"Se actualizo el registro del proyecto");
+ 		            }else
+                       JOptionPane.showMessageDialog(null, "No se pudo actualizar el registro del proyecto");
+ 		           con.close();
+ 		           limpiarDatosP();
+ 				}catch (SQLException e1) {
+ 					// TODO Auto-generated catch block
+ 					e1.printStackTrace();
+ 				}
+        	}
+        });
+        btnActualizarD_1.setBackground(new Color(51, 153, 153));
+        btnActualizarD_1.setBounds(311, 276, 99, 23);
+        panel2.add(btnActualizarD_1);
+        
+        JButton btnEliminarD_1 = new JButton("Eliminar");
+        btnEliminarD_1.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		Connection con = null;
+                try {
+       				Class.forName("com.mysql.cj.jdbc.Driver");
+       				con = (Connection) DriverManager.getConnection(URL, USER, CLAVE);
+       			} catch (ClassNotFoundException e1) {
+       				// TODO Auto-generated catch block
+       				e1.printStackTrace();
+       			}
+                catch (SQLException e1) {
+       				// TODO Auto-generated catch block
+       				e1.printStackTrace();
+       			}
+        		 PreparedStatement ps=null;
+        		 try {
+ 					ps=con.prepareStatement("DELETE FROM proyectos WHERE idproy=?");
+ 		            ps.setString(1, txtIdP.getText());
+ 		            int rpta=ps.executeUpdate();
+ 		           if(rpta>0) {
+                       JOptionPane.showMessageDialog(null,"Se elimino el registro del proyecto");
+ 		           }else
+                       JOptionPane.showMessageDialog(null, "No se pudo eliminar el registro del proyecto. Intente otra vez");
+ 		           con.close();
+ 		           limpiarDatosP();
+ 				}catch (SQLException e1) {
+ 					// TODO Auto-generated catch block
+ 					e1.printStackTrace();
+ 				}
+        	}
+        });
+        btnEliminarD_1.setBackground(new Color(255, 51, 51));
+        btnEliminarD_1.setBounds(420, 276, 89, 23);
+        panel2.add(btnEliminarD_1);
         //Creamos el panel y lo añadimos a las pestañas
         JPanel panel1=new JPanel();
         pestañas.addTab("Departamentos", panel1);
@@ -179,7 +365,7 @@ public class PestañaGestion extends JFrame {
  		            	txtTlfD.setText(res.getString("telefono"));
  		            	txtFaxD.setText(res.getString("fax"));
  		            }else{
- 		                JOptionPane.showMessageDialog(null, "No se encontro el registro de ingeniero");
+ 		                JOptionPane.showMessageDialog(null, "No se encontro el registro de departamento");
  		            }
  				} catch (SQLException e1) {
  					// TODO Auto-generated catch block
@@ -253,7 +439,7 @@ public class PestañaGestion extends JFrame {
 		            if(rpta>0){
 		                JOptionPane.showMessageDialog(null,"Se añadio el registro de departamento");
 		            }else{
-		                JOptionPane.showMessageDialog(null, "No se pudo añadir, intente de nuevo");
+		                JOptionPane.showMessageDialog(null, "No se pudo añadir el departamento, intente de nuevo");
 		            }
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -264,7 +450,7 @@ public class PestañaGestion extends JFrame {
         	}
         });
         btnInsertarD.setBackground(new Color(0, 204, 0));
-        btnInsertarD.setBounds(215, 233, 89, 23);
+        btnInsertarD.setBounds(205, 233, 89, 23);
         panel1.add(btnInsertarD);
         
         JButton btnActualizarD = new JButton("Actualizar");
@@ -293,7 +479,7 @@ public class PestañaGestion extends JFrame {
  		           if(rpta>0) {
                        JOptionPane.showMessageDialog(null,"Se actualizo el registro del departamento");
  		           }else
-                       JOptionPane.showMessageDialog(null, "No se pudo actualizar el registro del ingeniero");
+                       JOptionPane.showMessageDialog(null, "No se pudo actualizar el registro del departamento");
  		           con.close();
  		           limpiarDatosD();
  				}catch (SQLException e1) {
@@ -303,7 +489,7 @@ public class PestañaGestion extends JFrame {
         	}
         });
         btnActualizarD.setBackground(new Color(51, 153, 153));
-        btnActualizarD.setBounds(314, 233, 89, 23);
+        btnActualizarD.setBounds(304, 233, 99, 23);
         panel1.add(btnActualizarD);
         
         JButton btnEliminarD = new JButton("Eliminar");
@@ -437,7 +623,7 @@ public class PestañaGestion extends JFrame {
 		            if(rpta>0){
 		                JOptionPane.showMessageDialog(null,"Se añadio el registro de ingeniero");
 		            }else{
-		                JOptionPane.showMessageDialog(null, "No se pudo añadir, intente de nuevo");
+		                JOptionPane.showMessageDialog(null, "No se pudo añadir el registro del ingeniero, intente de nuevo");
 		            }
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -484,7 +670,7 @@ public class PestañaGestion extends JFrame {
  				}
         	}
         });
-        btnActualizarI.setBounds(296, 211, 89, 23);
+        btnActualizarI.setBounds(283, 211, 111, 23);
         panel3.add(btnActualizarI);
         
         JButton btnEliminarI = new JButton("Eliminar");
@@ -581,5 +767,14 @@ public class PestañaGestion extends JFrame {
 		txtNombreD.setText("");
 		txtTlfD.setText("");
 		txtFaxD.setText("");
+	}
+	public void limpiarDatosP() {
+		txtIdP.setText("");
+		txtIdP.setEditable(true);
+		txtNombreP.setText("");
+		txtFeIniP.setText("");
+		txtFeTerP.setText("");
+		cmbDpto.setSelectedItem("Ninguno");
+		cmbIng.setSelectedItem("Ninguno");
 	}
 }

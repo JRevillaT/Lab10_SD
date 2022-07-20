@@ -94,7 +94,7 @@ public class Consulta1 extends JFrame {
 		contentPane.add(lblSeleccioneElDepartamento);
 		
 		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Ninguno", "1. Direccion general", "2. Financiero", "3. Marketing", "4. Recursos Humanos", "5. Comercial", "6. Compras"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Ninguno", "1. Direccion general", "2. Financiero", "3. Marketing", "4. R.R H.H.", "5. Comercial", "6. TI"}));
 		comboBox.setBounds(293, 155, 130, 22);
 		contentPane.add(comboBox);
 		
