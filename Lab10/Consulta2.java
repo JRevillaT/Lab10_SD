@@ -18,8 +18,11 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+import javax.swing.DefaultComboBoxModel;
 
 public class Consulta2 extends JFrame {
 
@@ -97,9 +100,10 @@ public class Consulta2 extends JFrame {
 		areaRpta.setBounds(10, 185, 505, 221);
 		contentPane.add(areaRpta);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(281, 153, 231, 22);
-		contentPane.add(comboBox);
+		JComboBox cmbIng = new JComboBox();
+		cmbIng.setModel(new DefaultComboBoxModel(new String[] {"Ninguno", "1. Campa\u00F1a de Verano", "2. Sistema de Alcantarillas", "3. Plataforma E-Comerce", "4. Activacion Prestamos", "5. Pruebas de Software", "6. Front-End Proyecto \"Nina\""}));
+		cmbIng.setBounds(198, 153, 231, 22);
+		contentPane.add(cmbIng);
 		
 		JButton btnNewButton_1 = new JButton("Salir");
 		btnNewButton_1.setBackground(new Color(255, 0, 51));
@@ -117,6 +121,46 @@ public class Consulta2 extends JFrame {
 		btnNewButton.setBackground(new Color(255, 204, 0));
 		btnNewButton.setBounds(10, 417, 169, 23);
 		contentPane.add(btnNewButton);
+		
+		JButton btnBuscarP = new JButton("Buscar");
+		btnBuscarP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String selDpto=(String) cmbIng.getSelectedItem();
+				if(selDpto.equals("Ninguno")) {
+					JOptionPane.showMessageDialog(null, "Debes seleccionar un Ingeniero");
+				}else {
+					Connection con = null;
+	                try {
+	       				Class.forName("com.mysql.cj.jdbc.Driver");
+	       				con = (Connection) DriverManager.getConnection(URL, USER, CLAVE);
+	       			} catch (ClassNotFoundException e1) {
+	       				// TODO Auto-generated catch block
+	       				e1.printStackTrace();
+	       			}
+	                catch (SQLException e1) {
+	       				// TODO Auto-generated catch block
+	       				e1.printStackTrace();
+	       			}
+	        		 PreparedStatement ps=null;
+	                 ResultSet res;
+	                 try {
+	 					ps=con.prepareStatement("SELECT * FROM ingeniero WHERE iding=?");
+	 					ps.setString(1, selDpto.substring(0,1));
+	 		            res=ps.executeQuery();
+	 		            String outText="";
+	 		            while (res.next()){
+	 		               outText+=res.getString("iding") + "-" + res.getString("especialidad")+ "-" + res.getString("cargo")+"\n";
+	 		            }
+	 		            areaRpta.setText(outText);
+	 				 }catch (SQLException e1) {
+	 					// TODO Auto-generated catch block
+	 					e1.printStackTrace();
+	 				}
+				}
+			}
+		});
+		btnBuscarP.setBounds(429, 153, 89, 23);
+		contentPane.add(btnBuscarP);
 	}
 
 }

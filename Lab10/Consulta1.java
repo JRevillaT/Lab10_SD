@@ -19,6 +19,8 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
@@ -81,11 +83,11 @@ public class Consulta1 extends JFrame {
 		lblTitulo.setBounds(0, 0, 523, 83);
 		contentPane.add(lblTitulo);
 		
-		JLabel lblBusquedaDeProyectos = new JLabel("Busqueda de proyectos por departamento");
-		lblBusquedaDeProyectos.setHorizontalAlignment(SwingConstants.LEFT);
-		lblBusquedaDeProyectos.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
-		lblBusquedaDeProyectos.setBounds(10, 91, 511, 49);
-		contentPane.add(lblBusquedaDeProyectos);
+		JLabel lblBuscarP = new JLabel("Busqueda de proyectos por departamento");
+		lblBuscarP.setHorizontalAlignment(SwingConstants.LEFT);
+		lblBuscarP.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+		lblBuscarP.setBounds(10, 91, 511, 49);
+		contentPane.add(lblBuscarP);
 		
 		JLabel lblSeleccioneElDepartamento = new JLabel("Escoja el departamento para realizar la busqueda");
 		lblSeleccioneElDepartamento.setHorizontalAlignment(SwingConstants.LEFT);
@@ -93,10 +95,10 @@ public class Consulta1 extends JFrame {
 		lblSeleccioneElDepartamento.setBounds(12, 147, 341, 36);
 		contentPane.add(lblSeleccioneElDepartamento);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Ninguno", "1. Direccion general", "2. Financiero", "3. Marketing", "4. R.R H.H.", "5. Comercial", "6. TI"}));
-		comboBox.setBounds(293, 155, 130, 22);
-		contentPane.add(comboBox);
+		JComboBox cmbDpto = new JComboBox();
+		cmbDpto.setModel(new DefaultComboBoxModel(new String[] {"Ninguno", "1. Direccion general", "2. Financiero", "3. Marketing", "4. R.R H.H.", "5. Comercial", "6. TI"}));
+		cmbDpto.setBounds(293, 155, 130, 22);
+		contentPane.add(cmbDpto);
 		
 		JTextArea areaRpta = new JTextArea();
 		areaRpta.setWrapStyleWord(true);
@@ -121,8 +123,46 @@ public class Consulta1 extends JFrame {
 		btnNewButton_1.setBounds(426, 427, 89, 23);
 		contentPane.add(btnNewButton_1);
 		
-		JButton btnNewButton_2 = new JButton("Buscar");
-		btnNewButton_2.setBounds(426, 155, 89, 23);
-		contentPane.add(btnNewButton_2);
+		JButton btnBuscarP = new JButton("Buscar");
+		btnBuscarP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String selDpto=(String) cmbDpto.getSelectedItem();
+				if(selDpto.equals("Ninguno")) {
+					JOptionPane.showMessageDialog(null, "Debes seleccionar un departamento");
+				}else {
+					Connection con = null;
+	                try {
+	       				Class.forName("com.mysql.cj.jdbc.Driver");
+	       				con = (Connection) DriverManager.getConnection(URL, USER, CLAVE);
+	       			} catch (ClassNotFoundException e1) {
+	       				// TODO Auto-generated catch block
+	       				e1.printStackTrace();
+	       			}
+	                catch (SQLException e1) {
+	       				// TODO Auto-generated catch block
+	       				e1.printStackTrace();
+	       			}
+	        		 PreparedStatement ps=null;
+	                 ResultSet res;
+	                 try {
+	 					ps=con.prepareStatement("SELECT * FROM proyectos WHERE id_dpt=?");
+	 					ps.setString(1, selDpto.substring(0,1));
+	 		            res=ps.executeQuery();
+	 		            String outText="";
+	 		           //outText+=res.getString("id") + "-" + res.getString("nombre")+ "-" + res.getDate("f_inicio")+"-"+res.getDate("f_termino")+"\n";
+	 		           while (res.next()){
+	 		        	   System.out.println("iteracion");
+	 		              outText+=res.getString(1) + "-" + res.getString(2)+ "-" + res.getDate(3)+"-"+res.getDate(4)+"\n";
+	 		          }
+	 		           areaRpta.setText(outText);
+	 				} catch (SQLException e1) {
+	 					// TODO Auto-generated catch block
+	 					e1.printStackTrace();
+	 				}
+				}
+			}
+		});
+		btnBuscarP.setBounds(426, 155, 89, 23);
+		contentPane.add(btnBuscarP);
 	}
 }
