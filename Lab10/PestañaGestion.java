@@ -155,6 +155,37 @@ public class PestañaGestion extends JFrame {
         JButton btnNewButton_2 = new JButton("Buscar");
         btnNewButton_2.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		Connection con = null;
+                try {
+       				Class.forName("com.mysql.cj.jdbc.Driver");
+       				con = (Connection) DriverManager.getConnection(URL, USER, CLAVE);
+       			} catch (ClassNotFoundException e1) {
+       				// TODO Auto-generated catch block
+       				e1.printStackTrace();
+       			}
+                catch (SQLException e1) {
+       				// TODO Auto-generated catch block
+       				e1.printStackTrace();
+       			}
+        		 PreparedStatement ps=null;
+                 ResultSet res;
+                 try {
+ 					ps=con.prepareStatement("SELECT * FROM departamentos WHERE iddpto=?");
+ 					ps.setString(1, txtIdD.getText());
+ 		            res=ps.executeQuery();
+ 		            if(res.next()){
+ 		            	txtIdD.setEditable(false);
+ 		            	txtNombreD.setText(res.getString("nombre"));
+ 		            	txtTlfD.setText(res.getString("telefono"));
+ 		            	txtFaxD.setText(res.getString("fax"));
+ 		            }else{
+ 		                JOptionPane.showMessageDialog(null, "No se encontro el registro de ingeniero");
+ 		            }
+ 				} catch (SQLException e1) {
+ 					// TODO Auto-generated catch block
+ 					e1.printStackTrace();
+ 				}
+        		
         	}
         });
         btnNewButton_2.setBounds(166, 24, 89, 23);
@@ -196,8 +227,8 @@ public class PestañaGestion extends JFrame {
         btnLimpiarDatos_1.setBounds(26, 233, 136, 23);
         panel1.add(btnLimpiarDatos_1);
         
-        JButton btnInsertarI_1 = new JButton("Insertar");
-        btnInsertarI_1.addActionListener(new ActionListener() {
+        JButton btnInsertarD = new JButton("Insertar");
+        btnInsertarD.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		Connection con = null;
                 try {
@@ -228,23 +259,88 @@ public class PestañaGestion extends JFrame {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-                 limpiarDatos();
+                 limpiarDatosD();
         		
         	}
         });
-        btnInsertarI_1.setBackground(new Color(0, 204, 0));
-        btnInsertarI_1.setBounds(215, 233, 89, 23);
-        panel1.add(btnInsertarI_1);
+        btnInsertarD.setBackground(new Color(0, 204, 0));
+        btnInsertarD.setBounds(215, 233, 89, 23);
+        panel1.add(btnInsertarD);
         
-        JButton btnActualizarI_1 = new JButton("Actualizar");
-        btnActualizarI_1.setBackground(new Color(51, 153, 153));
-        btnActualizarI_1.setBounds(314, 233, 89, 23);
-        panel1.add(btnActualizarI_1);
+        JButton btnActualizarD = new JButton("Actualizar");
+        btnActualizarD.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		Connection con = null;
+                try {
+       				Class.forName("com.mysql.cj.jdbc.Driver");
+       				con = (Connection) DriverManager.getConnection(URL, USER, CLAVE);
+       			} catch (ClassNotFoundException e1) {
+       				// TODO Auto-generated catch block
+       				e1.printStackTrace();
+       			}
+                catch (SQLException e1) {
+       				// TODO Auto-generated catch block
+       				e1.printStackTrace();
+       			}
+        		 PreparedStatement ps=null;
+        		 try {
+ 					ps=con.prepareStatement("UPDATE departamentos SET nombre=?,telefono=?,fax=? WHERE iddpto=?");
+ 					ps.setString(1, txtNombreD.getText());
+ 		            ps.setString(2, txtTlfD.getText());
+ 		            ps.setString(3, txtFaxD.getText());
+ 		            ps.setString(4, txtIdD.getText());
+ 		            int rpta=ps.executeUpdate();
+ 		           if(rpta>0) {
+                       JOptionPane.showMessageDialog(null,"Se actualizo el registro del departamento");
+ 		           }else
+                       JOptionPane.showMessageDialog(null, "No se pudo actualizar el registro del ingeniero");
+ 		           con.close();
+ 		           limpiarDatosD();
+ 				}catch (SQLException e1) {
+ 					// TODO Auto-generated catch block
+ 					e1.printStackTrace();
+ 				}
+        	}
+        });
+        btnActualizarD.setBackground(new Color(51, 153, 153));
+        btnActualizarD.setBounds(314, 233, 89, 23);
+        panel1.add(btnActualizarD);
         
-        JButton btnEliminarI_1 = new JButton("Eliminar");
-        btnEliminarI_1.setBackground(new Color(255, 51, 51));
-        btnEliminarI_1.setBounds(417, 233, 89, 23);
-        panel1.add(btnEliminarI_1);
+        JButton btnEliminarD = new JButton("Eliminar");
+        btnEliminarD.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		Connection con = null;
+                try {
+       				Class.forName("com.mysql.cj.jdbc.Driver");
+       				con = (Connection) DriverManager.getConnection(URL, USER, CLAVE);
+       			} catch (ClassNotFoundException e1) {
+       				// TODO Auto-generated catch block
+       				e1.printStackTrace();
+       			}
+                catch (SQLException e1) {
+       				// TODO Auto-generated catch block
+       				e1.printStackTrace();
+       			}
+        		 PreparedStatement ps=null;
+        		 try {
+ 					ps=con.prepareStatement("DELETE FROM departamentos WHERE iddpto=?");
+ 		            ps.setString(1, txtIdD.getText());
+ 		            int rpta=ps.executeUpdate();
+ 		           if(rpta>0) {
+                       JOptionPane.showMessageDialog(null,"Se elimino el registro del departamento");
+ 		           }else
+                       JOptionPane.showMessageDialog(null, "No se pudo eliminar el registro del departamento. Intente otra vez");
+ 		           con.close();
+ 		           limpiarDatosD();
+ 				}catch (SQLException e1) {
+ 					// TODO Auto-generated catch block
+ 					e1.printStackTrace();
+ 				}
+        	}
+        });
+        btnEliminarD.setBackground(new Color(255, 51, 51));
+        btnEliminarD.setBounds(417, 233, 89, 23);
+        panel1.add(btnEliminarD);
         
       //Creamos el panel y lo añadimos a las pestañas
         JPanel panel3=new JPanel();
@@ -481,6 +577,7 @@ public class PestañaGestion extends JFrame {
 	}
 	public void limpiarDatosD() {
 		txtIdD.setText("");
+		txtIdD.setEditable(true);
 		txtNombreD.setText("");
 		txtTlfD.setText("");
 		txtFaxD.setText("");
